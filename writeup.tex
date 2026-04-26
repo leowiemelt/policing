@@ -1,0 +1,348 @@
+\documentclass[11pt]{article}
+
+\usepackage[margin=1in]{geometry}
+\usepackage{setspace}
+\usepackage{booktabs}       
+\usepackage{dcolumn}        % decimal-aligned columns in tables
+\usepackage{graphicx}       % \includegraphics
+\usepackage{float}          % [H] placement
+\usepackage{caption}
+\usepackage{subcaption}
+\usepackage{amsmath}
+\usepackage{hyperref}
+\usepackage{natbib}         % author–year citations (or switch to biblatex)
+\usepackage{url}
+\usepackage{microtype}      % better text justification
+\usepackage{lmodern}        % scalable font
+\usepackage{siunitx}        % number formatting (\num{})
+\usepackage{threeparttable} % table notes
+\usepackage{pdflscape}      % \begin{landscape} for wide tables
+\usepackage{xcolor}
+\usepackage{appendix}
+
+% ---------- Spacing ----------
+\onehalfspacing             % or \doublespacing if required
+
+% ---------- Custom commands ----------
+\newcommand{\agency}{San Diego Police Department}   % e.g., San Diego Police Department
+\newcommand{\yr}{2020}            % e.g., 2022
+\newcommand{\N}[1]{\num{#1}}          % shorthand for formatted numbers
+
+% ---------- Title block ----------
+\title{\textbf{Racial Disparities in Traffic Stops:\\
+       Evidence from \agency{} (\yr{})}\\[0.4em]
+       \large RIPA Stop Data Analysis}
+\author{Leo Wiemelt\\
+        \small ECON 185}
+\date{\today}
+
+% ============================================================
+\begin{document}
+% ============================================================
+
+\maketitle
+\thispagestyle{empty}
+
+% ---------- Abstract (optional but helpful) ----------
+\begin{abstract}
+\noindent
+[One-paragraph summary: agency, year, key findings from each of the three
+tests — summary statistics, Veil of Darkness, hit-rate analysis — and your
+main takeaway. Keep to 150 words.]
+\end{abstract}
+
+\bigskip
+
+% ============================================================
+\section{Context and Summary Statistics}
+\label{sec:summary}
+% ============================================================
+
+% --- 1.1 Sample description ---
+\subsection*{Data and Sample}
+
+I use \year{} RIPA stop data from \agency{}.\footnote{
+  Data downloaded from \url{https://openjustice.doj.ca.gov/data}.
+  The README documents variable definitions and reporting requirements.}
+[Describe the agency briefly: size, jurisdiction type, urban/rural setting.
+State the total number of stops in the raw data and any exclusions (e.g.,
+stops with missing race, missing time of day). Explain how you construct
+the analytic sample used in all three sections unless noted otherwise.]
+
+% --- Table 1: Summary statistics ---
+\subsection*{Task A: Stop Totals and Demographics}
+
+Table~\ref{tab:summary} reports total stops, the racial composition of stops,
+and three stop reasons of interest.\footnote{
+  [Footnote: define the three stop reasons you selected and why.]}
+
+\begin{table}[H]
+  \centering
+  \caption{Stop Characteristics by Race, \agency{} (\year{})}
+  \label{tab:summary}
+  \begin{threeparttable}
+    \begin{tabular}{lS[table-format=6.0]S[table-format=2.1]
+                      S[table-format=2.1]S[table-format=2.1]S[table-format=2.1]}
+      \toprule
+                     & {Total Stops} & {\% of Stops} & {Reason 1 (\%)} & {Reason 2 (\%)} & {Reason 3 (\%)} \\
+      \midrule
+      White          &     &     &     &     &     \\
+      Black          &     &     &     &     &     \\
+      Hispanic       &     &     &     &     &     \\
+      Asian          &     &     &     &     &     \\
+      Other/Unknown  &     &     &     &     &     \\
+      \midrule
+      \textbf{Total} &     & 100.0 &     &     &     \\
+      \bottomrule
+    \end{tabular}
+    \begin{tablenotes}[flushleft]
+      \footnotesize
+      \item \textit{Notes:} [Explain columns. ``Reason 1,'' ``Reason 2,'' and
+      ``Reason 3'' correspond to RIPA \texttt{[variable names]}. Percentages
+      in columns 3–5 are computed within each racial group. Sample excludes
+      [any exclusions].]
+    \end{tablenotes}
+  \end{threeparttable}
+\end{table}
+
+% --- Figure 1: Search rates ---
+\subsection*{Task B: Search Rates by Race}
+
+[One paragraph defining your search indicator. State whether you use ``any
+search'' (aggregating all RIPA search-type columns) or a specific type, and
+explain why. Point the reader to Figure~\ref{fig:search_rates}.]
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=0.72\textwidth]{figures/search_rate_by_race.pdf}
+  \caption{Search Rate by Race, \agency{} (\year{})}
+  \label{fig:search_rates}
+  \footnotesize
+  \textit{Notes:} Search rate = searches / total stops, using an ``any search''
+  indicator (consent, incident to arrest, probable cause, warrant). Bars show
+  95\% confidence intervals based on heteroskedasticity-robust standard errors.
+  N = [number of stops].
+\end{figure}
+
+% --- Conceptual question 1 ---
+\subsection*{Conceptual Question: Does a Disparity Prove Discrimination?}
+
+[Answer in 2–4 paragraphs. Key points to cover:
+\begin{itemize}
+  \item A raw disparity in search rates is consistent with discrimination but not proof of it.
+  \item Officers may face different information sets across racial groups (omitted variable problem).
+  \item Benchmark problem: we do not observe the racial composition of the at-risk driving population.
+  \item Confounders: neighborhood, stop reason, prior criminal history, etc.
+  \item Transition sentence linking to the two quasi-experimental tests that follow.
+\end{itemize}
+Delete the itemize and replace with prose in your final draft.]
+
+% ============================================================
+\section{The Veil of Darkness Test}
+\label{sec:vod}
+% ============================================================
+
+\subsection*{Design}
+
+[2–3 paragraphs explaining the VOD logic: officers cannot perceive race in
+the dark before making a stop; if daylight increases minority stop rates
+(conditional on clock time), this is consistent with racial profiling.
+Describe the intertwilight window you use (e.g., 5:00–8:30 PM), the
+sunrise/sunset package (R: \texttt{suncalc}; Python: \texttt{astral}), and
+the time-of-day bins (e.g., 15-minute dummies).]
+
+\subsection*{Sample Restriction}
+
+[Explain the intertwilight restriction. Report how many stops remain after
+restricting to the window. Note whether the VOD sample differs from the
+Section~\ref{sec:summary} sample and why.]
+
+% --- Regression specification ---
+\subsection*{Specification}
+
+The estimating equation is
+\begin{equation}
+  \Pr(\text{Minority}_{it} = 1) =
+    \beta_0 + \beta_1 \, \text{Daylight}_{it}
+    + \sum_{k} \gamma_k \, \mathbf{1}[\text{15-min bin} = k]
+    + \varepsilon_{it},
+  \label{eq:vod}
+\end{equation}
+where $\text{Minority}_{it}$ is an indicator equal to one if the stopped
+individual is perceived as Black or Hispanic, and $\text{Daylight}_{it}$
+equals one if the stop occurred before local sunset.\footnote{
+  Sunset times are calculated using [\texttt{suncalc} / \texttt{astral}]
+  at the agency's centroid coordinates: [lat, lon].}
+All standard errors are heteroskedasticity-robust.
+
+% --- Table 2: VOD regression ---
+\begin{table}[H]
+  \centering
+  \caption{Veil-of-Darkness Regression: Effect of Daylight on Minority Stop Rate}
+  \label{tab:vod}
+  \begin{threeparttable}
+    \begin{tabular}{lD{.}{.}{2,4}D{.}{.}{2,4}D{.}{.}{2,4}}
+      \toprule
+      & \multicolumn{1}{c}{(1)} & \multicolumn{1}{c}{(2)} & \multicolumn{1}{c}{(3)} \\
+      & \multicolumn{1}{c}{Black or Hispanic} & \multicolumn{1}{c}{Black} & \multicolumn{1}{c}{Hispanic} \\
+      \midrule
+      Daylight      &   &   &   \\
+                    & \multicolumn{1}{c}{[SE]} & \multicolumn{1}{c}{[SE]} & \multicolumn{1}{c}{[SE]} \\[4pt]
+      \midrule
+      15-min dummies & \multicolumn{1}{c}{Yes} & \multicolumn{1}{c}{Yes} & \multicolumn{1}{c}{Yes} \\
+      Observations  &   &   &   \\
+      Mean dep.\ var.\ (dark) & & & \\
+      \bottomrule
+    \end{tabular}
+    \begin{tablenotes}[flushleft]
+      \footnotesize
+      \item \textit{Notes:} Linear probability model, Equation~\eqref{eq:vod}.
+      Robust standard errors in parentheses. Sample restricted to stops between
+      [start time] and [end time] (intertwilight window).
+      $^{*}p<0.10$, $^{**}p<0.05$, $^{***}p<0.01$.
+    \end{tablenotes}
+  \end{threeparttable}
+\end{table}
+
+% --- Conceptual question 2 ---
+\subsection*{Conceptual Question: Interpreting the VOD Coefficient}
+
+[Answer in 2–4 paragraphs. Cover:
+\begin{itemize}
+  \item What a positive $\hat\beta_1$ means (minority share rises in daylight).
+  \item What it does \emph{not} mean: it cannot identify which specific officers discriminate; it requires the stable-composition assumption (minority share of drivers doesn't change between dusk window seasons); it is an intent-to-treat estimate.
+  \item Potential confounders that might survive the time-of-day controls.
+\end{itemize}
+Replace itemize with prose in your final draft.]
+
+% ============================================================
+\section{The Outcome Test: Hit Rates}
+\label{sec:hitrate}
+% ============================================================
+
+\subsection*{Design}
+
+[Explain the outcome-test logic: if officers apply a lower suspicion
+threshold to minority drivers, searches of minority drivers should be less
+productive (lower hit rate). Describe how you construct the ``any
+contraband'' indicator, listing the RIPA columns included.]
+
+% --- Regression specification ---
+\subsection*{Specification}
+
+Conditional on a search, the estimating equation is
+\begin{equation}
+  \Pr(\text{Contraband}_{it} = 1) =
+    \alpha_0
+    + \alpha_{\text{B}} \, \text{Black}_{it}
+    + \alpha_{\text{H}} \, \text{Hispanic}_{it}
+    + \varepsilon_{it},
+  \label{eq:hit}
+\end{equation}
+where White is the omitted category. Standard errors are
+heteroskedasticity-robust. The sample consists of all stops in which a
+search occurred (N = [number of searches]).
+
+% --- Table 3: Hit-rate regression + raw rates ---
+\begin{table}[H]
+  \centering
+  \caption{Hit-Rate Regression and Search/Contraband Rates by Race}
+  \label{tab:hitrate}
+  \begin{threeparttable}
+    \begin{tabular}{lD{.}{.}{1,4}S[table-format=2.1]S[table-format=2.1]}
+      \toprule
+      & \multicolumn{1}{c}{(1)} & \multicolumn{2}{c}{Raw rates (\%)} \\
+      \cmidrule(lr){3-4}
+      & \multicolumn{1}{c}{Contraband found} & {Search rate} & {Hit rate} \\
+      \midrule
+      White (base)       &           &     &     \\
+      Black              &           &     &     \\
+                         & \multicolumn{1}{c}{[SE]} & & \\
+      Hispanic           &           &     &     \\
+                         & \multicolumn{1}{c}{[SE]} & & \\
+      Asian              &           &     &     \\
+                         & \multicolumn{1}{c}{[SE]} & & \\
+      \midrule
+      Constant           &           & \multicolumn{1}{c}{---} & \multicolumn{1}{c}{---} \\
+                         & \multicolumn{1}{c}{[SE]} & & \\
+      Observations       &           & \multicolumn{1}{c}{[N stops]} & \multicolumn{1}{c}{[N searches]} \\
+      \bottomrule
+    \end{tabular}
+    \begin{tablenotes}[flushleft]
+      \footnotesize
+      \item \textit{Notes:} Column (1) is a linear probability model,
+      Equation~\eqref{eq:hit}, estimated on the sample of stops where a
+      search occurred. ``Any contraband'' includes [list RIPA columns].
+      Search rate (column 2) is from the full analytic sample in
+      Section~\ref{sec:summary}; hit rate (column 3) is conditional on search.
+      Robust standard errors in parentheses.
+      $^{*}p<0.10$, $^{**}p<0.05$, $^{***}p<0.01$.
+    \end{tablenotes}
+  \end{threeparttable}
+\end{table}
+
+% --- Conceptual question 3 ---
+\subsection*{Conceptual Question: Search Rates vs.\ Hit Rates}
+
+[Answer in 3–5 paragraphs. Cover:
+\begin{itemize}
+  \item Compare the racial gaps in search rates (Section~\ref{sec:summary}) to the racial gaps in hit rates (Table~\ref{tab:hitrate}): do groups with high search rates have lower hit rates?
+  \item What the infra-marginality problem is: the outcome test identifies the average threshold, not whether any single search was discriminatory.
+  \item Limitations: base rate differences across groups; heterogeneous contraband types; selection into the search sample.
+\end{itemize}
+Replace itemize with prose in your final draft.]
+
+% ============================================================
+%  References
+% ============================================================
+\clearpage
+\bibliographystyle{plainnat}
+\bibliography{references}   % put your .bib file here
+
+% ============================================================
+%  Appendix: Replication Code
+% ============================================================
+\clearpage
+\begin{appendices}
+
+\section{Data Construction and Variable Definitions}
+\label{app:variables}
+
+[Describe all variables clearly: race categories, search indicator, contraband
+indicator, daylight indicator, intertwilight window bounds, time-of-day bins.
+Reference the RIPA README as needed.]
+
+% ---- Code listing ----
+% Option A: paste code directly (use listings package)
+% Option B: describe the steps and point to an attached script
+
+\section{Replication Code}
+\label{app:code}
+
+All analysis was conducted in [R / Stata / Python].
+The replication script is attached as \texttt{analysis.[R/do/py]}.
+Below we reproduce the key steps.
+
+% Uncomment and configure if you want inline code:
+%\usepackage{listings}  % add to preamble
+%\lstset{language=R, basicstyle=\footnotesize\ttfamily,
+%        breaklines=true, frame=single}
+%\begin{lstlisting}
+%# --- paste your code here ---
+%\end{lstlisting}
+
+\section{Robustness Checks}
+\label{app:robustness}
+
+[Optional but recommended for a strong grade. Examples:
+\begin{itemize}
+  \item VOD with a narrower intertwilight window (e.g., 5:30–8:00 PM).
+  \item Separate VOD regressions for Black and Hispanic drivers.
+  \item Hit-rate regression controlling for stop reason.
+  \item Alternative contraband definition (drugs only, or drugs + weapons).
+\end{itemize}
+]
+
+\end{appendices}
+
+\end{document}
