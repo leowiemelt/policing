@@ -84,41 +84,41 @@ degree of officer discretion involved.
       \toprule
       & {Total Stops} & {\% of Stops} & {Moving (\%)} & {Equipment (\%)} & {Investigative (\%)} \\
       \midrule
-      White          &     &     &     &     &     \\
-      Black          &     &     &     &     &     \\
-      Hispanic       &     &     &     &     &     \\
-      Asian          &     &     &     &     &     \\
-      Other/Unknown  &     &     &     &     &     \\
+      Asian & 2520 & 6.8 & 0.0 & 0.0 & 2.4 \\
+      Black & 1585 & 4.3 & 0.0 & 0.0 & 8.8 \\
+      Hispanic & 13612 & 36.7 & 0.0 & 0.0 & 4.8 \\
+      White & 19423 & 52.3 & 0.0 & 0.0 & 5.2 \\
+      Total & 37140 & 100.0 & 0.0 & 0.0 & 5.1 \\
       \midrule
       \textbf{Total} &     & 100.0 &     &     &     \\
       \bottomrule
     \end{tabular}
-    \begin{tablenotes}[flushleft]
-      \footnotesize
-      \item \textit{Notes:} Percentages in columns 3–5 are computed within race.
-      Stop reasons correspond to RIPA variable \texttt{STOP\_REASON\_1}.
-      Sample excludes stops with missing race or invalid timestamps.
-    \end{tablenotes}
   \end{threeparttable}
 \end{table}
 
 \subsection*{Task B}
 
-I define a search indicator equal to one if any search occurred during the stop,
+I define a search indicator to be if any search occurred during the stop,
 including consent, probable cause, incident-to-arrest, or warrant searches.
-This ``any search'' measure captures overall search behavior without
-conditioning on search type. Figure~\ref{fig:search_rates} plots search rates by
-race with 95\% confidence intervals.
+This measure captures overall search behavior without differentiating by search type. Table 2 shows the search rates by
+race.
 
-\begin{figure}[H]
-  \centering
-  \includegraphics[width=0.72\textwidth]{figures/search_rate_by_race.pdf}
-  \caption{Search Rate by Race, \agency{} (\yr{})}
-  \label{fig:search_rates}
-  \footnotesize
-  \textit{Notes:} Search rate equals the number of stops involving any search
-  divided by total stops. Bars show 95\% confidence intervals.
-\end{figure}
+\begin{table}[H]
+\centering
+\caption{Person Search Rates by Race/Ethnicity (Orange County, 2020)}
+\label{tab:person_search}
+\begin{tabular}{lr}
+\toprule
+ & Search Rate \\
+\midrule
+Hispanic / Latino & 0.251 \\
+White & 0.199 \\
+Black / African American & 0.225 \\
+Asian & 0.104 \\
+Other / Multiracial & 0.240 \\
+\bottomrule
+\end{tabular}
+\end{table}
 
 \subsection*{Conceptual Question: Does a Disparity Prove Discrimination?}
 
