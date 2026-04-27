@@ -136,25 +136,19 @@ population, raw disparities cannot be interpreted causally. The distribution of 
 
 \subsection*{Design}
 
-The Veil of Darkness test exploits seasonal variation in sunset times. During
-daylight, officers can typically perceive a driver’s race prior to initiating
-a stop, whereas after dark this information is largely unavailable. If minority
-drivers are stopped at higher rates in daylight than in darkness, conditional
-on time of day, this pattern is consistent with racial profiling.
+The Veil of Darkness test exploits seasonal variation in sunset times. In theory, during
+daylight, officers can more effectively perceive the driver’s race prior to the stop, whereas after dark this information is unavailable. If minority drivers are stopped at higher rates in daylight than in darkness, we can more accurately conclude that discrimination is occurring.
 
-I restrict attention to an intertwilight window around sunset and include
-15-minute time-of-day fixed effects. Sunset times are computed using the
-\texttt{astral} package at the geographic centroid of Orange County.
+I restrict attention to a time window around sunset and include 15-minute fixed effects to flexibly control for variation in traffic patterns over short intervals. This helps ensure that comparisons between daylight and darkness are made among drivers observed at similar times of day. Sunset timing variation across days is used to estimate exogenous variation across visibility conditions.
 
 \subsection*{Sample Restriction}
 
-The VOD sample includes only stops occurring between 5:00 PM and 8:30 PM. This
-window ensures overlap between daylight and darkness across seasons while
-limiting changes in traffic composition.
+The VOD sample includes only stops occurring between 5:00 and 8:30 PM. This
+window contains overlap between daylight and darkness across all seasons.
 
 \subsection*{Specification}
 
-Equation~\eqref{eq:vod} estimates the effect of daylight on the probability that
+The Veil of Darkness Regression estimates the effect of daylight on the probability that
 a stopped driver is perceived as Black or Hispanic.
 
 \begin{table}[H]
@@ -162,37 +156,35 @@ a stopped driver is perceived as Black or Hispanic.
   \caption{Veil-of-Darkness Regression: Effect of Daylight on Minority Stop Rate}
   \label{tab:vod}
   \begin{threeparttable}
-    \begin{tabular}{lD{.}{.}{2,4}D{.}{.}{2,4}D{.}{.}{2,4}}
+    \begin{tabular}{lccc}
       \toprule
       & (1) & (2) & (3) \\
       & Black or Hispanic & Black & Hispanic \\
       \midrule
-      Daylight      &   &   &   \\
-                    & ( ) & ( ) & ( ) \\[4pt]
+      Daylight 
+      & 0.0948 
+      & 0.0047 
+      & 0.0892 \\
+      & (0.0239) 
+      & (0.0099) 
+      & (0.0236) \\
       \midrule
       15-min dummies & Yes & Yes & Yes \\
-      Observations  &   &   &   \\
-      Mean dep.\ var.\ (dark) & & & \\
+      Observations & 5212 & 5212 & 5212 \\
       \bottomrule
     \end{tabular}
     \begin{tablenotes}[flushleft]
       \footnotesize
-      \item \textit{Notes:} Linear probability model with heteroskedasticity-robust
-      standard errors. Sample restricted to the intertwilight window.
+      \item Positive coefficients indicate a higher likelihood of minority stops during daylight conditions relative to darkness.
     \end{tablenotes}
   \end{threeparttable}
 \end{table}
 
-\subsection*{Conceptual Question: Interpreting the VOD Coefficient}
+\subsection*{Does the probability of stopping a minority driver rise when the sun is up? What does this mean, and what does it not mean?}
 
 A positive daylight coefficient indicates that minority drivers constitute a
-larger share of stops when officers can observe race. This pattern is
-consistent with racial profiling but does not identify individual officer
-behavior.
-
-The validity of the test relies on the assumption that the racial composition
-of drivers does not change systematically between daylight and darkness within
-the window. Violations of this assumption could bias the estimate.
+relatively greater share of stops when officers can observe race (light out). This result is consistent with racial profiling in all 3 cases but does not identify specific officer behavior. The validity of this test hinges on the assumption that the racial composition of drivers does not change between daylight and darkness within
+the specified window (5-8:30 PM). If driver travel patterns differ by lighting conditions in ways correlated with race, the assumption would fail, and the estimate would be biased. However, within a narrow time window around sunset, we can assume such differences to be minimal, making the Veil of Darkness test a meaningful approach in detecting potential discrimination.
 
 % ============================================================
 \section{The Outcome Test: Hit Rates}
