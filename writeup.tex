@@ -200,42 +200,37 @@ contraband'' as the discovery of drugs, weapons, or other illegal items.
 
 \subsection*{Specification}
 
-Equation~\eqref{eq:hit} is estimated on the subsample of stops involving a
-search, with White drivers as the omitted category.
+The regression is estimated on the subsample of stops involving a search, with white drivers as the omitted category.
 
 \begin{table}[H]
   \centering
   \caption{Hit-Rate Regression and Search/Contraband Rates by Race}
   \label{tab:hitrate}
   \begin{threeparttable}
-    \begin{tabular}{lD{.}{.}{1,4}S[table-format=2.1]S[table-format=2.1]}
+    \begin{tabular}{lccc}
       \toprule
-      & (1) & \multicolumn{2}{c}{Raw rates (\%)} \\
-      \cmidrule(lr){3-4}
-      & Contraband found & Search rate & Hit rate \\
+      & (1) Contraband & Search Rate (\%) & Hit Rate (\%) \\
       \midrule
-      White (base) & & & \\
-      Black & & & \\
-            & ( ) & & \\
-      Hispanic & & & \\
-               & ( ) & & \\
-      Asian & & & \\
-            & ( ) & & \\
-      \midrule
-      Observations & & & \\
-      \bottomrule
+      White  
+      & 0.0000 
+      & 20.8 
+      & 37.1 \\
+      
+      Black 
+      & -0.0690 
+      & 24.5 
+      & 29.6 \\
+      
+      Hispanic 
+      & -0.0468 
+      & 27.2 
+      & 31.8 \\
     \end{tabular}
   \end{threeparttable}
 \end{table}
 
-\subsection*{Conceptual Question: Search Rates vs.\ Hit Rates}
+\subsection*{How different are search rates by race compared to hit rates? What does
+this tell you about the potential for disparate policing? What are the limitations of this test?}
 
-If groups with higher search rates also exhibit lower hit rates, this pattern
-is consistent with lower suspicion thresholds being applied to those groups.
-However, the outcome test is subject to the infra-marginality problem and
-cannot detect discrimination occurring at the margin of search decisions.
-
-\bibliographystyle{plainnat}
-\bibliography{references}
-
+If groups with higher search rates also exhibit lower hit rates, this pattern is consistent with the possibility that lower thresholds for suspicion are applied to those groups, implying disparate policing. However, this interpretation is not concrete and the test is limited. Differences in hit rates could also occur because of heterogeneous distributions of contraband risk across racial groups, even with equal search thresholds. As a result, the outcome test cannot isolate discrimination at the margin of search decision.
 \end{document}
