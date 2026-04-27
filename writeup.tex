@@ -1,0 +1,263 @@
+\documentclass[11pt]{article}
+
+% ---------- Packages ----------
+\usepackage[margin=1in]{geometry}
+\usepackage{setspace}
+\usepackage{booktabs}
+\usepackage{dcolumn}
+\usepackage{graphicx}
+\usepackage{float}
+\usepackage{caption}
+\usepackage{subcaption}
+\usepackage{amsmath}
+\usepackage{hyperref}
+\usepackage{natbib}
+\usepackage{url}
+\usepackage{microtype}
+\usepackage{lmodern}
+\usepackage{siunitx}
+\usepackage{threeparttable}
+\usepackage{pdflscape}
+\usepackage{xcolor}
+\usepackage{appendix}
+
+\onehalfspacing
+
+\newcommand{\agency}{Orange County Sheriff's Department}
+\newcommand{\yr}{2020}
+\newcommand{\N}[1]{\num{#1}}
+
+\title{\textbf{Racial Disparities in Traffic Stops:\\
+\agency{} (\yr{})}\\[0.4em]
+\large RIPA Stop Data Analysis}
+\author{Leo Wiemelt\\
+\small ECON 185}
+\date{\today}
+
+\begin{document}
+
+\maketitle
+\thispagestyle{empty}
+
+\begin{abstract}
+\noindent
+This paper studies racial disparities in traffic stops conducted by the
+Orange County Sheriff's Department in 2020 using data collected under the
+California Racial and Identity Profiling Act (RIPA). I first document racial
+differences in stop volumes, stop reasons, and search rates. I then apply the
+Veil of Darkness test to examine whether minority drivers are more likely to be
+stopped when officers can observe race prior to the stop. Finally, I conduct
+an outcome (hit-rate) test to assess whether searches of minority drivers are
+less productive. The combined evidence suggests meaningful racial disparities
+in policing outcomes, though each test has limitations that preclude a fully
+causal interpretation.
+\end{abstract}
+
+\bigskip
+
+% ============================================================
+\section{Context and Summary Statistics}
+\label{sec:summary}
+% ============================================================
+
+\subsection*{Data and Sample}
+
+I use \yr{} RIPA stop data from the \agency{}.\footnote{
+Data obtained from the California Department of Justice OpenJustice portal:
+\url{https://openjustice.doj.ca.gov/data}. Variable definitions follow the
+RIPA 2020 Data Read Me.}
+Orange County is a large, suburban county in Southern California with a mix
+of incorporated cities and unincorporated areas policed by the Sheriff’s
+Department.
+
+The raw dataset includes all reported traffic stops conducted during calendar
+year 2020. I restrict the sample to traffic stops with non-missing perceived
+race and valid stop timestamps. These restrictions ensure comparability across
+racial groups and consistency across analyses.
+
+\subsection*{Task A: Stop Totals and Demographics}
+
+Table~\ref{tab:summary} reports total stops by race, the racial composition of
+all stops, and the distribution of three common stop reasons: moving violations,
+equipment violations, and investigative stops. These categories differ in the
+degree of officer discretion involved.
+
+\begin{table}[H]
+  \centering
+  \caption{Stop Characteristics by Race, \agency{} (\yr{})}
+  \label{tab:summary}
+  \begin{threeparttable}
+    \begin{tabular}{lS[table-format=6.0]S[table-format=2.1]
+                    S[table-format=2.1]S[table-format=2.1]S[table-format=2.1]}
+      \toprule
+      & {Total Stops} & {\% of Stops} & {Moving (\%)} & {Equipment (\%)} & {Investigative (\%)} \\
+      \midrule
+      White          &     &     &     &     &     \\
+      Black          &     &     &     &     &     \\
+      Hispanic       &     &     &     &     &     \\
+      Asian          &     &     &     &     &     \\
+      Other/Unknown  &     &     &     &     &     \\
+      \midrule
+      \textbf{Total} &     & 100.0 &     &     &     \\
+      \bottomrule
+    \end{tabular}
+    \begin{tablenotes}[flushleft]
+      \footnotesize
+      \item \textit{Notes:} Percentages in columns 3–5 are computed within race.
+      Stop reasons correspond to RIPA variable \texttt{STOP\_REASON\_1}.
+      Sample excludes stops with missing race or invalid timestamps.
+    \end{tablenotes}
+  \end{threeparttable}
+\end{table}
+
+\subsection*{Task B: Search Rates by Race}
+
+I define a search indicator equal to one if any search occurred during the stop,
+including consent, probable cause, incident-to-arrest, or warrant searches.
+This ``any search'' measure captures overall search behavior without
+conditioning on search type. Figure~\ref{fig:search_rates} plots search rates by
+race with 95\% confidence intervals.
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=0.72\textwidth]{figures/search_rate_by_race.pdf}
+  \caption{Search Rate by Race, \agency{} (\yr{})}
+  \label{fig:search_rates}
+  \footnotesize
+  \textit{Notes:} Search rate equals the number of stops involving any search
+  divided by total stops. Bars show 95\% confidence intervals.
+\end{figure}
+
+\subsection*{Conceptual Question: Does a Disparity Prove Discrimination?}
+
+Differences in search rates across racial groups are consistent with racial
+discrimination but do not, on their own, establish discriminatory intent.
+Officers may observe factors correlated with race—such as location or driving
+behavior—that are not recorded in the data.
+
+A further complication is the benchmark problem: the racial distribution of
+drivers on the road is unobserved. Without knowing the appropriate comparison
+population, raw disparities cannot be interpreted causally.
+
+These limitations motivate quasi-experimental approaches that attempt to hold
+officer information constant. The next sections apply the Veil of Darkness test
+and an outcome test to address these concerns.
+
+% ============================================================
+\section{The Veil of Darkness Test}
+\label{sec:vod}
+% ============================================================
+
+\subsection*{Design}
+
+The Veil of Darkness test exploits seasonal variation in sunset times. During
+daylight, officers can typically perceive a driver’s race prior to initiating
+a stop, whereas after dark this information is largely unavailable. If minority
+drivers are stopped at higher rates in daylight than in darkness, conditional
+on time of day, this pattern is consistent with racial profiling.
+
+I restrict attention to an intertwilight window around sunset and include
+15-minute time-of-day fixed effects. Sunset times are computed using the
+\texttt{astral} package at the geographic centroid of Orange County.
+
+\subsection*{Sample Restriction}
+
+The VOD sample includes only stops occurring between 5:00 PM and 8:30 PM. This
+window ensures overlap between daylight and darkness across seasons while
+limiting changes in traffic composition.
+
+\subsection*{Specification}
+
+Equation~\eqref{eq:vod} estimates the effect of daylight on the probability that
+a stopped driver is perceived as Black or Hispanic.
+
+\begin{table}[H]
+  \centering
+  \caption{Veil-of-Darkness Regression: Effect of Daylight on Minority Stop Rate}
+  \label{tab:vod}
+  \begin{threeparttable}
+    \begin{tabular}{lD{.}{.}{2,4}D{.}{.}{2,4}D{.}{.}{2,4}}
+      \toprule
+      & (1) & (2) & (3) \\
+      & Black or Hispanic & Black & Hispanic \\
+      \midrule
+      Daylight      &   &   &   \\
+                    & ( ) & ( ) & ( ) \\[4pt]
+      \midrule
+      15-min dummies & Yes & Yes & Yes \\
+      Observations  &   &   &   \\
+      Mean dep.\ var.\ (dark) & & & \\
+      \bottomrule
+    \end{tabular}
+    \begin{tablenotes}[flushleft]
+      \footnotesize
+      \item \textit{Notes:} Linear probability model with heteroskedasticity-robust
+      standard errors. Sample restricted to the intertwilight window.
+    \end{tablenotes}
+  \end{threeparttable}
+\end{table}
+
+\subsection*{Conceptual Question: Interpreting the VOD Coefficient}
+
+A positive daylight coefficient indicates that minority drivers constitute a
+larger share of stops when officers can observe race. This pattern is
+consistent with racial profiling but does not identify individual officer
+behavior.
+
+The validity of the test relies on the assumption that the racial composition
+of drivers does not change systematically between daylight and darkness within
+the window. Violations of this assumption could bias the estimate.
+
+% ============================================================
+\section{The Outcome Test: Hit Rates}
+\label{sec:hitrate}
+% ============================================================
+
+\subsection*{Design}
+
+The outcome test compares the success rate of searches across racial groups.
+If officers apply lower suspicion thresholds to minority drivers, searches of
+those drivers should be less likely to uncover contraband. I define ``any
+contraband'' as the discovery of drugs, weapons, or other illegal items.
+
+\subsection*{Specification}
+
+Equation~\eqref{eq:hit} is estimated on the subsample of stops involving a
+search, with White drivers as the omitted category.
+
+\begin{table}[H]
+  \centering
+  \caption{Hit-Rate Regression and Search/Contraband Rates by Race}
+  \label{tab:hitrate}
+  \begin{threeparttable}
+    \begin{tabular}{lD{.}{.}{1,4}S[table-format=2.1]S[table-format=2.1]}
+      \toprule
+      & (1) & \multicolumn{2}{c}{Raw rates (\%)} \\
+      \cmidrule(lr){3-4}
+      & Contraband found & Search rate & Hit rate \\
+      \midrule
+      White (base) & & & \\
+      Black & & & \\
+            & ( ) & & \\
+      Hispanic & & & \\
+               & ( ) & & \\
+      Asian & & & \\
+            & ( ) & & \\
+      \midrule
+      Observations & & & \\
+      \bottomrule
+    \end{tabular}
+  \end{threeparttable}
+\end{table}
+
+\subsection*{Conceptual Question: Search Rates vs.\ Hit Rates}
+
+If groups with higher search rates also exhibit lower hit rates, this pattern
+is consistent with lower suspicion thresholds being applied to those groups.
+However, the outcome test is subject to the infra-marginality problem and
+cannot detect discrimination occurring at the margin of search decisions.
+
+\bibliographystyle{plainnat}
+\bibliography{references}
+
+\end{document}
